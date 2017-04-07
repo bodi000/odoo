@@ -455,8 +455,8 @@ msgstr "Quantité-3"
 
 #. module: product
 #: model:res.groups,name:product.group_product_variant
-msgid "Product Variant (not supported)"
-msgstr "Variante d'article (non supportée)"
+msgid "Product Variant"
+msgstr "Variante d'article"
 
 #. module: product
 #: field:product.price_list,qty4:0

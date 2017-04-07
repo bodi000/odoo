@@ -100,6 +100,7 @@ class product_pricelist(osv.osv):
         'active': fields.boolean('Active', help="If unchecked, it will allow you to hide the pricelist without removing it."),
         'type': fields.selection(_pricelist_type_get, 'Pricelist Type', required=True),
         'version_id': fields.one2many('product.pricelist.version', 'pricelist_id', 'Pricelist Versions'),
+        'item_ids': fields.one2many('product.pricelist.item', 'pricelist_id', 'Pricelist Items', copy=True),
         'currency_id': fields.many2one('res.currency', 'Currency', required=True),
         'company_id': fields.many2one('res.company', 'Company'),
     }
@@ -431,6 +432,13 @@ class product_pricelist_item(osv.osv):
                 return False
         return True
 
+    def _get_product_pricelist(self, cr, uid, ids, context=None):
+        result = set()
+        for pricelist in self.pool.get('product.pricelist').browse(cr, uid, ids, context=context):
+            for item in pricelist.item_ids:
+                result.add(item.id)
+        return list(result)
+    
     _columns = {
         'name': fields.char('Rule Name', size=64, help="Explicit rule name for this pricelist line."),
         'price_version_id': fields.many2one('product.pricelist.version', 'Price List Version', required=True, select=True, ondelete='cascade'),
@@ -439,10 +447,12 @@ class product_pricelist_item(osv.osv):
         'categ_id': fields.many2one('product.category', 'Product Category', ondelete='cascade', help="Specify a product category if this rule only applies to products belonging to this category or its children categories. Keep empty otherwise."),
 
         'min_quantity': fields.integer('Min. Quantity', required=True, help="Specify the minimum quantity that needs to be bought/sold for the rule to apply."),
+        'applied_on': fields.selection([('3_global', 'Global'),('2_product_category', ' Product Category'), ('1_product', 'Product'), ('0_product_variant', 'Product Variant')], string="Apply On", required=True,
+            help='Pricelist Item applicable on selected option'),
         'sequence': fields.integer('Sequence', required=True, help="Gives the order in which the pricelist items will be checked. The evaluation gives highest priority to lowest sequence and stops as soon as a matching item is found."),
         'base': fields.selection(_price_field_get, 'Based on', required=True, size=-1, help="Base price for computation."),
         'base_pricelist_id': fields.many2one('product.pricelist', 'Other Pricelist'),
-
+        'pricelist_id': fields.many2one('product.pricelist', 'Pricelist', ondelete='cascade', select=True),
         'price_surcharge': fields.float('Price Surcharge',
             digits_compute= dp.get_precision('Product Price'), help='Specify the fixed amount to add or substract(if negative) to the amount calculated with the discount.'),
         'price_discount': fields.float('Price Discount', digits=(16,4)),
@@ -456,8 +466,21 @@ class product_pricelist_item(osv.osv):
             digits_compute= dp.get_precision('Product Price'), help='Specify the minimum amount of margin over the base price.'),
         'price_max_margin': fields.float('Max. Price Margin',
             digits_compute= dp.get_precision('Product Price'), help='Specify the maximum amount of margin over the base price.'),
-        'company_id': fields.related('price_version_id','company_id',type='many2one',
-            readonly=True, relation='res.company', string='Company', store=True)
+        'company_id': fields.related('pricelist_id','company_id',type='many2one',
+            readonly=True, relation='res.company', string='Company', store={
+                'product.pricelist': (_get_product_pricelist, ['company_id'], 30),
+                'product.pricelist.item': (lambda self, cr, uid, ids, c=None: ids, ['pricelist_id'], 30),
+            }),
+        'currency_id': fields.related('pricelist_id', 'currency_id', type='many2one',
+            readonly=True, relation='res.currency', string='Currency', store={
+                'product.pricelist': (_get_product_pricelist, ['currency_id'], 30),
+                'product.pricelist.item': (lambda self, cr, uid, ids, c=None: ids, ['pricelist_id'], 30),
+            }),
+        'date_start': fields.date('Start Date', help="Starting date for the pricelist item validation"),
+        'date_end': fields.date('End Date', help="Ending valid for the pricelist item validation"),
+        'compute_price': fields.selection([('fixed', 'Fix Price'), ('percentage', 'Percentage (discount)'), ('formula', 'Formula')], select=True, default='fixed'),
+        'fixed_price': fields.float('Fixed Price', digits_compute=dp.get_precision('Product Price')),
+        'percent_price': fields.float('Percentage Price'),
     }
 
     _constraints = [

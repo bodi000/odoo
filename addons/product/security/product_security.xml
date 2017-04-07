@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 <data noupdate="0">
-    <!-- Change name of group for 7.0 users since product variant module doesn't exist anymore
-    DO NOT CHANGE IT IN TRUNK -->
-
-    <record id="group_product_variant" model="res.groups">
-        <field name="name">Product Variant (not supported)</field>
-        <field name="category_id" ref="base.module_category_hidden"/>
-    </record>
 
     <record id="group_sale_pricelist" model="res.groups">
         <field name="name">Sales Pricelists</field>
         <field name="category_id" ref="base.module_category_hidden"/>
     </record>
 
+    <record id="group_pricelist_item" model="res.groups">
+        <field name="name">Manage Pricelist Items</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+    </record>
+
+    <record id="group_product_pricelist" model="res.groups">
+        <field name="name">Pricelists On Product</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+    </record>
     <record id="group_purchase_pricelist" model="res.groups">
         <field name="name">Purchase Pricelists</field>
         <field name="category_id" ref="base.module_category_hidden"/>
     </record>
-	
-	<record id="group_costing_method" model="res.groups">
+
+    <record id="group_costing_method" model="res.groups">
         <field name="name">Costing Method</field>
         <field name="category_id" ref="base.module_category_hidden"/>
     </record>
-	
+
     <record id="group_uom" model="res.groups">
         <field name="name">Manage Multiple Units of Measure</field>
         <field name="category_id" ref="base.module_category_hidden"/>
@@ -41,6 +43,11 @@
 
     <record id="group_mrp_properties" model="res.groups">
         <field name="name">Manage Properties of Product</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+    </record>
+
+    <record id="group_product_variant" model="res.groups">
+        <field name="name">Manage Product Variants</field>
         <field name="category_id" ref="base.module_category_hidden"/>
     </record>
 

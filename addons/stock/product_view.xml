@@ -68,7 +68,7 @@
             <field name="model">product.product</field>
             <field name="inherit_id" ref="product.product_normal_form_view"/>
             <field name="arch" type="xml">
-                <group name="procurement_uom" position="before">
+                <group name="delay" position="replace">
                     <group name="delay" string="Delays">
                         <label for="produce_delay" attrs="{'invisible':[('type','=','service')]}"/>
                         <div attrs="{'invisible':[('type','=','service')]}">
@@ -207,7 +207,7 @@
             <field name="model">product.product</field>
             <field name="inherit_id" ref="product.product_kanban_view"/>
             <field name="arch" type="xml">
-                <field name="list_price" position="after">
+                <field name="lst_price" position="after">
                     <field name="reception_count"/>
                     <field name="delivery_count"/>
                 </field>

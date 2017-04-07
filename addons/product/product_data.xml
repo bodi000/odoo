@@ -180,6 +180,7 @@ parameter) will see those record just disappear.
             <field name="price_version_id" ref="ver0"/>
             <field name="base" ref="list_price"/>
             <field name="name">Default Public Pricelist Line</field>
+            <field name="applied_on">3_global</field>
         </record>
 
         <!--
