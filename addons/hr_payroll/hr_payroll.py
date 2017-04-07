@@ -45,7 +45,7 @@ class hr_payroll_structure(osv.osv):
     _name = 'hr.payroll.structure'
     _description = 'Salary Structure'
     _columns = {
-        'name':fields.char('Name', size=256, required=True),
+        'name':fields.char('Name', size=256, translate=True, required=True),
         'code':fields.char('Reference', size=64, required=True),
         'company_id':fields.many2one('res.company', 'Company', required=True),
         'note': fields.text('Description'),
@@ -163,7 +163,7 @@ class contrib_register(osv.osv):
     _columns = {
         'company_id':fields.many2one('res.company', 'Company'),
         'partner_id':fields.many2one('res.partner', 'Partner'),
-        'name':fields.char('Name', size=256, required=True, readonly=False),
+        'name':fields.char('Name', size=256, translate=True, required=True, readonly=False),
         'register_line_ids':fields.one2many('hr.payslip.line', 'register_id', 'Register Line', readonly=True),
         'note': fields.text('Description'),
     }
@@ -183,7 +183,7 @@ class hr_salary_rule_category(osv.osv):
     _name = 'hr.salary.rule.category'
     _description = 'Salary Rule Category'
     _columns = {
-        'name':fields.char('Name', size=64, required=True, readonly=False),
+        'name':fields.char('Name', size=64, translate=True, required=True, readonly=False),
         'code':fields.char('Code', size=64, required=True, readonly=False),
         'parent_id':fields.many2one('hr.salary.rule.category', 'Parent', help="Linking a salary category to its parent is used only for the reporting purpose."),
         'children_ids': fields.one2many('hr.salary.rule.category', 'parent_id', 'Children'),
@@ -774,7 +774,7 @@ class hr_salary_rule(osv.osv):
 
     _name = 'hr.salary.rule'
     _columns = {
-        'name':fields.char('Name', size=256, required=True, readonly=False),
+        'name':fields.char('Name', size=256, translate=True, required=True, readonly=False),
         'code':fields.char('Code', size=64, required=True, help="The code of salary rules can be used as reference in computation of other rules. In that case, it is case sensitive."),
         'sequence': fields.integer('Sequence', required=True, help='Use to arrange calculation sequence', select=True),
         'quantity': fields.char('Quantity', size=256, help="It is used in computation for percentage and fixed amount.For e.g. A rule for Meal Voucher having fixed amount of 1€ per worked day can have its quantity defined in expression like worked_days.WORK100.number_of_days."),
