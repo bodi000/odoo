@@ -24,7 +24,7 @@ from openerp.tools.translate import _
 
 class account_fiscalyear_close(osv.osv_memory):
     """
-    Closes Account Fiscalyear and Generate Opening entries for New Fiscalyear
+    Closes Account Fiscal year and Generate Opening entries for New Fiscal year
     """
     _name = "account.fiscalyear.close"
     _description = "Fiscalyear Close"
@@ -43,7 +43,7 @@ class account_fiscalyear_close(osv.osv_memory):
 
     def data_save(self, cr, uid, ids, context=None):
         """
-        This function close account fiscalyear and create entries in new fiscalyear
+        This function closes account fiscalyear and creates entries in new fiscalyear
         @param cr: the current row, from the database cursor,
         @param uid: the current user’s ID for security checks,
         @param ids: List of Account fiscalyear close state’s IDs
@@ -56,7 +56,7 @@ class account_fiscalyear_close(osv.osv_memory):
             object is really resource greedy (not supposed to work on reconciliation between thousands of records) and
             it does a lot of different computation that are useless in this particular case.
             """
-            #check that the reconcilation concern journal entries from only one company
+            #check that the reconciliation concern journal entries from only one company
             cr.execute('select distinct(company_id) from account_move_line where id in %s',(tuple(ids),))
             if len(cr.fetchall()) > 1:
                 raise osv.except_osv(_('Warning!'), _('The entries to reconcile should belong to the same company.'))
@@ -126,7 +126,7 @@ class account_fiscalyear_close(osv.osv_memory):
         }
         move_id = obj_acc_move.create(cr, uid, vals, context=context)
 
-        #1. report of the accounts with defferal method == 'unreconciled'
+        #1. report of the accounts with deferral method == 'unreconciled'
         cr.execute('''
             SELECT a.id
             FROM account_account a
@@ -176,7 +176,7 @@ class account_fiscalyear_close(osv.osv_memory):
                                           FROM account_move_line a
                                           WHERE a.period_id IN ('''+fy2_period_set+''')))''', (new_journal.id, period.id, period.date_start, move_id, tuple(account_ids),))
 
-        #2. report of the accounts with defferal method == 'detail'
+        #2. report of the accounts with deferral method == 'detail'
         cr.execute('''
             SELECT a.id
             FROM account_account a
@@ -205,7 +205,7 @@ class account_fiscalyear_close(osv.osv_memory):
                      ''', (new_journal.id, period.id, period.date_start, move_id, tuple(account_ids),))
 
 
-        #3. report of the accounts with defferal method == 'balance'
+        #3. report of the accounts with deferral method == 'balance'
         cr.execute('''
             SELECT a.id
             FROM account_account a
@@ -252,7 +252,7 @@ class account_fiscalyear_close(osv.osv_memory):
             ('period_id.fiscalyear_id','=',new_fyear.id)])
         if ids:
             reconcile_id = _reconcile_fy_closing(cr, uid, ids, context=context)
-            #set the creation date of the reconcilation at the first day of the new fiscalyear, in order to have good figures in the aged trial balance
+            #set the creation date of the reconciliation at the first day of the new fiscalyear, in order to have good figures in the aged trial balance
             self.pool.get('account.move.reconcile').write(cr, uid, [reconcile_id], {'create_date': new_fyear.date_start}, context=context)
 
         #create the journal.period object and link it to the old fiscalyear

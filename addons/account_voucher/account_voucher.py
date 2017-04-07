@@ -1140,7 +1140,7 @@ class account_voucher(osv.osv):
 
         :param line: browse record of the voucher.line for which we want to create currency rate difference accounting
             entries
-        :param move_id: Account move wher the move lines will be.
+        :param move_id: Account move where the move lines will be.
         :param amount_residual: Amount to be posted.
         :param company_currency: id of currency of the company to which the voucher belong
         :param current_currency: id of currency of the voucher
