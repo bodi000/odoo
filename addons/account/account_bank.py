@@ -55,7 +55,7 @@ class bank(osv.osv):
 
     def post_write(self, cr, uid, ids, context=None):
         if isinstance(ids, (int, long)):
-          ids = [ids]
+            ids = [ids]
 
         obj_acc = self.pool.get('account.account')
         obj_data = self.pool.get('ir.model.data')
