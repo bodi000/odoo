@@ -8,6 +8,7 @@ import os
 import os.path
 import platform
 import random
+import re
 import select
 import signal
 import socket
@@ -778,6 +779,10 @@ class WorkerCron(Worker):
             db_names = config['db_name'].split(',')
         else:
             db_names = openerp.service.db.list_dbs(True)
+            if config['dbfilter']:
+                r = openerp.tools.config['dbfilter']
+                db_names = [i for i in db_names if re.match(r, i)]
+                
         return db_names
 
     def process_work(self):
